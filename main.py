@@ -1,17 +1,15 @@
-#!/usr/bin/env python
-import urllib2
+import miniaudio
 
-stream_url = 'https://stream.skylab-radio.com/live'
-request = urllib2.Request(stream_url)
-try:
-    request.add_header('Icy-MetaData', 1)
-    response = urllib2.urlopen(request)
-    icy_metaint_header = response.headers.get('icy-metaint')
-    if icy_metaint_header is not None:
-        metaint = int(icy_metaint_header)
-        read_buffer = metaint+255
-        content = response.read(read_buffer)
-        title = content[metaint:].split("'")[1]
-        print(title)
-except:
-    print('Error!')
+def title_printer(client: miniaudio.IceCastClient, new_title: str) -> None:
+    print("Stream title: ", new_title)
+
+with miniaudio.IceCastClient("http://icecast.spc.org:8000/longplayer",
+        update_stream_title=title_printer) as source:
+    print("Connected to internet stream, audio format:", source.audio_format.name)
+    print("Station name: ", source.station_name)
+    print("Station genre: ", source.station_genre)
+    print("Press <enter> to quit playing.\n")
+    stream = miniaudio.stream_any(source, source.audio_format)
+    with miniaudio.PlaybackDevice() as device:
+        device.start(stream)
+        input()   # wait for user input, stream plays in background
