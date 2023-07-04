@@ -72,10 +72,10 @@ while True:
     print("Stream title: ", new_title)
 
     with miniaudio.IceCastClient("https://stream.skylab-radio.com/live", update_stream_title=title_printer) as source:
-    print("Connected to internet stream, audio format:", source.audio_format.name)
-    station_name = "Station name: " + source.station_name
-    print("Press <enter> to quit playing.\n")
-    stream = miniaudio.stream_any(source, source.audio_format)
+        print("Connected to internet stream, audio format:", source.audio_format.name)
+        station_name = "Station name: " + source.station_name
+        print("Press <enter> to quit playing.\n")
+        stream = miniaudio.stream_any(source, source.audio_format)
     
     with miniaudio.PlaybackDevice() as device:
         device.start(stream)
